@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #6a5acd;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    h2 {
+      margin: 0;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px 20px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    .card h3 {
+      margin-top: 0;
+      color: #6a5acd;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+    li:last-child {
+      border-bottom: none;
+    }
+    button.logout {
+      margin-top: 20px;
+      padding: 10px 15px;
+      background: #6a5acd;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button.logout:hover {
+      background: #7b68ee;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Welcome Student </h2>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h3>Exam Timetable</h3>
+      <ul id="timetable"></ul>
+    </div>
+
+    <div class="card">
+      <h3>Results</h3>
+      <ul id="results"></ul>
+    </div>
+
+    <div class="card">
+      <h3>Courses Offered</h3>
+      <ul id="courses"></ul>
+    </div>
+
+    <div class="card">
+      <h3>Enrollments</h3>
+      <ul id="enrollments"></ul>
+    </div>
+  </div>
+
+  <div style="text-align:center;">
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    async function loadDashboard() {
+      const student_id = localStorage.getItem("student_id");
+      if (!student_id) {
+        alert("Please login first");
+        window.location.href = "student_login.html";
+        return;
+      }
+
+      // Fetch timetable
+      const timetableRes = await fetch(`http://localhost:5000/student/${student_id}/timetable`);
+      const timetableData = await timetableRes.json();
+      document.getElementById("timetable").innerHTML = timetableData.map(t => 
+        `<li><b>${t.course_id}</b> - ${t.exam_date} (${t.venue_id})</li>`).join("");
+
+      // Fetch results
+      const resultsRes = await fetch(`http://localhost:5000/student/${student_id}/results`);
+      const resultsData = await resultsRes.json();
+      document.getElementById("results").innerHTML = resultsData.map(r => 
+        `<li>${r.course_id}: <b>${r.grade}</b></li>`).join("");
+
+      // Fetch courses
+      const coursesRes = await fetch(`http://localhost:5000/student/${student_id}/courses`);
+      const coursesData = await coursesRes.json();
+      document.getElementById("courses").innerHTML = coursesData.map(c => 
+        `<li>${c.course_name} (ID: ${c.course_id}) - Faculty: ${c.faculty_name}</li>`).join("");
+
+      // Fetch enrollments
+      const enrollmentsRes = await fetch(`http://localhost:5000/student/${student_id}/enrollments`);
+      const enrollmentsData = await enrollmentsRes.json();
+      document.getElementById("enrollments").innerHTML = enrollmentsData.map(e => 
+        `<li>${e.course_name} - Semester: ${e.semester}</li>`).join("");
+    }
+
+    function logout() {
+      localStorage.removeItem("student_id");
+      window.location.href = "student.html";
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>

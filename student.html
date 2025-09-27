@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STUDENT LOGIN</title>
+    <link rel="icon" href="../jpg/student.jpg">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(159, 130, 238);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-box {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 350px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 15px;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: rgb(159, 130, 238);
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: rgb(170, 148, 231);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-box">
+        <h1>Student Login</h1>
+        <form id="loginForm">
+
+            <label for="student_id">Student ID:</label>
+            <input type="text" id="student_id" name="student_id" placeholder="Enter your ID" required>
+            
+            <!-- <label for="name">Name:</label>
+            <input type="text" id="name" name="student_name" placeholder="Enter your name" required> -->
+            <!-- <label for="dept_id">Department ID:</label>
+            <select id="dept_id" name="dept_id" required>
+                <option value="">Select your Department ID</option>
+                <option value="CSE">CSE</option>
+                <option value="IT">IT</option>
+                <option value="ECE">ECE</option>
+                <option value="CE">CE</option>
+                <option value="ME">ME</option>
+            </select>
+
+            <label for="Year">Year:</label>
+            <select id="Year" name="Year" required>
+                <option value="">-- Select Year --</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+
+            <label for="Email">Email ID:</label>
+            <input type="email" id="Email" name="Email" placeholder="Enter your Email ID" required>
+
+            <label for="ph">Contact Number:</label>
+            <input type="number" id="ph" name="ph" placeholder="Enter your Contact Number" required> -->
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const student_id = document.getElementById("student_id").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch("http://localhost:5000/student_login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ student_id, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                localStorage.setItem("student_id", student_id);
+                window.location.href = "student-dashboard.html";
+            } else {
+                alert(data.message);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
